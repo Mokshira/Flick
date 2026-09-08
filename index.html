@@ -58,6 +58,7 @@ dialog{background:var(--surface);color:var(--ink);border:1px solid var(--line);b
 @media(max-width:560px){.ch-header{min-height:72px;gap:12px}.ch-header-actions{gap:8px}.ch-save{display:none}.ch-back{font-size:14px}.ch-header .primary{font-size:14px;min-height:44px;padding:8px 14px}.ch-preview-head{padding:14px 16px}.ch-preview-head h2{font-size:18px}.ch-preview-head>span{font-size:14px}.ch-scene{height:240px}.ch-scene-caption{font-size:14px;left:12px;right:12px;max-width:calc(100% - 24px)}.ch-backgrounds{gap:4px;padding:8px}.ch-backgrounds>span{margin-left:4px;font-size:14px}.ch-backgrounds button{padding:8px;min-width:52px}.ch-detail-card{grid-template-columns:1fr;min-height:0}.ch-detail-stage{height:210px}.ch-detail-copy{padding:20px}.ch-presets{grid-template-columns:repeat(2,1fr);gap:10px}.ch-presets button{min-height:80px;flex-direction:row;gap:10px}.ch-presets-heading h2{font-size:18px}.ch-controls{padding:20px}.ch-ranges{gap:8px 20px}.ch-footnote{margin-top:16px}.ch-layout{gap:24px}.crosshair-page .hero h1{font-size:30px}}
 
 .motion-setting{grid-column:1/-1;border-top:1px solid var(--line);padding-top:8px;margin-top:12px}.motion-setting .field-hint{margin-top:0;font-size:14px;line-height:1.65}.motion-setting .switch-row{font-weight:550}
+.sound-controls{grid-column:1/-1}.sound-level{display:grid;grid-template-columns:28px minmax(0,1fr) 32px 64px;gap:8px;align-items:center;font-size:14px}.sound-level input[type=range]{width:100%;min-width:0;min-height:44px;margin:0}.sound-level output{text-align:right;font-variant-numeric:tabular-nums}.sound-test{height:44px;min-width:64px;padding:0 8px;background:transparent;color:inherit;border:1px solid var(--line,#d7dfe6);border-radius:8px;font:inherit;cursor:pointer}.sound-test:hover:not(:disabled){background:rgba(41,144,240,.09);border-color:#287ada}.sound-test:focus-visible{outline:2px solid #287ada;outline-offset:3px}.sound-test:disabled{opacity:.48;cursor:default}.audio-status{margin:4px 0 0;font-size:14px;line-height:1.6}.audio-status.warning{color:#966011}@media(prefers-color-scheme:dark){.audio-status.warning{color:#eac26b}}
 </style>
 </head>
 <body>
@@ -100,12 +101,16 @@ dialog{background:var(--surface);color:var(--ink);border:1px solid var(--line);b
       <div class="field-hint" style="grid-column:1/-1;margin-top:10px">cm / 360° 越大，转向越慢。DPI 请填鼠标的实际设置。</div>
       <div class="settings-divider"></div>
       <div class="field" style="margin-bottom:0"><div class="range-label"><label for="fovInput">水平视野 <span class="muted">/ 16:9</span></label><output id="fovValue" for="fovInput">103°</output></div><input type="range" id="fovInput" min="80" max="120" step="1" value="103"></div>
-      <label class="switch-row" style="grid-column:1/-1" for="soundInput"><span>命中音效</span><input type="checkbox" id="soundInput" checked role="switch" aria-label="命中音效"></label>
+      <div class="sound-controls">
+        <label class="switch-row" for="soundInput"><span>命中音效</span><input type="checkbox" id="soundInput" checked role="switch" aria-label="命中音效" aria-describedby="audioStatus"></label>
+        <div class="sound-level"><label for="volumeInput">音量</label><input id="volumeInput" type="range" min="0" max="100" step="5" value="35"><output id="volumeValue" for="volumeInput">35%</output><button class="sound-test" id="testSoundButton" type="button" aria-label="试听三声命中音效">试听</button></div>
+        <p class="field-hint audio-status" id="audioStatus" role="status" aria-live="polite">点击「试听」检查浏览器声音。</p>
+      </div>
       <div class="motion-setting"><label class="switch-row" for="movingTargets"><span>水平变速移动</span><input type="checkbox" id="movingTargets" role="switch" aria-label="小球水平变速移动" aria-describedby="motionHint"></label><p id="motionHint" class="field-hint">开启后，每颗球保持自身高度，左右变速移动。</p></div>
       <details class="advanced"><summary>更多设置<svg class="icon" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></summary><div class="advanced-body">
         <div class="field"><label class="field-label" for="inputMode">输入模式</label><select id="inputMode"><option value="fps">锁定鼠标 · 第一人称</option><option value="cursor">光标点靶 · 兼容模式</option></select><p class="field-hint" id="inputHelp">准星固定在中心，移动鼠标转动视角。</p></div>
         <button class="secondary editor-entry" id="openCrosshairSettings">打开准星调节页面 <span aria-hidden="true">↗</span></button>
-        <div class="field" style="margin-top:16px"><div class="range-label"><label for="volumeInput">音量</label><output id="volumeValue" for="volumeInput">35%</output></div><input id="volumeInput" type="range" min="0" max="100" step="5" value="35"></div>
+
         <p class="field-hint">优先请求原始鼠标输入；不支持时使用普通锁定输入。浏览器与驱动可能影响手感，请实测校准。</p>
       </div></details>
       <button class="primary start-button" id="startButton"><span>开始训练</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
@@ -190,6 +195,7 @@ dialog{background:var(--surface);color:var(--ink);border:1px solid var(--line);b
   <div class="help-section"><h3>一局 60 秒</h3><p>3 秒准备倒计时不计入训练时间。单击左键射击，不支持按住连射。命中 +100，打空 −50，最低 0 分；切出页面、失焦或解除鼠标锁定会自动暂停。放弃或重开的未完成局不保存。</p></div>
   <div class="help-section"><h3>键位</h3><div class="keyboard-grid"><div>射击<kbd>左键</kbd></div><div>暂停<kbd>Esc</kbd></div><div>重新开始<kbd>R</kbd></div><div>视角回正<kbd>C</kbd></div><div>切换全屏<kbd>F</kbd></div><div>继续训练<kbd>点击按钮</kbd></div></div></div>
   <div class="help-section"><h3>让灵敏度接近你的游戏</h3><p>填写鼠标实际 DPI，以及转一整圈需要移动的厘米数（cm / 360°）。后者越大，灵敏度越低。本版按 <span class="mono">360 × 2.54 ÷ (DPI × cm)</span> 计算每个鼠标计数对应的角度。</p><p>视野设置是 16:9 基准水平 FOV；改变窗口比例时保持垂直视野不变。原始输入是否可用由浏览器与系统决定，不能保证与原游戏的手感完全相同。建议使用鼠标、开启浏览器硬件加速，并实测校准。</p></div>
+  <div class="help-section"><h3>音效与试听</h3><p>打开「命中音效」，把首页音量调到非零，再点击「试听」，应听到三声命中提示。浏览器通常需要一次主动点击才能启用声音；网页会在开始、继续和点击目标时重试，不会让音频问题打断计分。</p><p>如果试听结束仍听不到，请检查标签页是否静音、网站声音权限、系统音量和实际输出设备。网页不能替你解除浏览器或系统静音。音量为 0 或关闭音效时，试听会禁用。</p></div>
   <div class="help-section"><h3>水平变速移动</h3><p>首页的「水平变速移动」开关默认关闭。开启后，每颗球固定在自己的出生高度，只沿水平方向左右移动，速度会持续变化并随机换向；边界会反弹，同一行的目标不会互相穿过。不是所有球都被放到同一个高度。</p><p>准备倒计时、暂停、切出窗口及准星设置期间，小球不移动。关闭开关后，新一局恢复经典静止模式。静止与移动成绩分开记录，旧成绩保留为静止成绩。</p></div>
   <div class="help-section"><h3>准星设置页</h3><p>首页右上角「准星设置」打开独立调节页面，支持颜色、线长、粗细、间距、不透明度、中心点、T 形和描边设置，并提供原尺寸 / 2 倍预览与四个预设。设置自动保存。暂停菜单也可以打开设置页，返回后保留本局计时与分数。</p><p>预览页可以临时切换深浅背景，不影响实际训练配色。锁定鼠标模式使用中心准星，兼容点靶模式使用相同造型的鼠标指针；浏览器不支持自定义指针时回退为十字光标。</p></div>
   <div class="help-section"><h3>自定义训练配色</h3><p>首页「场景配色」可分别修改小球颜色与训练背景。点击色块打开取色器，预览会立即更新；两种训练模式均使用这套配色，下次打开也会保留。背景保留网格与明暗层次，实际小球也有光照，因此不会是完全均匀的纯色。</p><p>「恢复默认」只重置小球和背景颜色，不影响灵敏度、准星或历史成绩。颜色太接近时会提示你提高对比度。</p></div>
@@ -232,6 +238,7 @@ let state='menu',session=null,targets=[],yaw=0,pitch=0,renderer=null,renderDirty
 let elapsedBank=0,runStart=0,countdownStart=0,countdownDuration=3000,countdownLast=-1;
 let rafId=0,lastHud=0,fpsStart=0,fpsFrames=0,lockAction='new',lockRequestId=0,lockTimer=0;
 let hitTimer=0,missTimer=0,toastTimer=0,audio=null,motionPreviewRaf=0;
+let audioBus=null,audioMeter=null,audioBuffers={},audioVoices=new Set(),audioNote='',audioNoteWarning=false,audioPreviewBusy=false,audioPreviewToken=0,audioLastTestPeak=0,audioWarnedRound=null;
 const canvas=$('scene');
 const intFmt=new Intl.NumberFormat('zh-CN');
 function number(n){return intFmt.format(Math.round(n));}
@@ -246,11 +253,11 @@ function populateSettings(){
   $('inputHelp').textContent=settings.input==='fps'?'准星固定在中心，移动鼠标转动视角。':'直接点击目标；不模拟视角转动，灵敏度设置不生效。';
   $('startHint').textContent=settings.input==='fps'?'点击后锁定鼠标，Esc 暂停':'直接点靶；Esc 或暂停按钮暂停';
   $('dpiInput').disabled=settings.input==='cursor';$('cmInput').disabled=settings.input==='cursor';
-  populateCrosshairEditor();applyCrosshairSettings(settings);updateMotionLabels();
+  populateCrosshairEditor();applyCrosshairSettings(settings);updateMotionLabels();updateAudioStatus();
 }
 function readSettingsInputs(){
   const old=settings;settings=cleanSettings({...settings,dpi:$('dpiInput').value||old.dpi,cm:$('cmInput').value||old.cm,fov:$('fovInput').value,sound:$('soundInput').checked,movingTargets:$('movingTargets').checked,volume:$('volumeInput').value,input:$('inputMode').value,crosshair:$('crosshairStyle').value,color:$('crosshairColor').value,targetColor:$('targetColor').value,backgroundColor:$('backgroundColor').value,...readCrosshairExtras()});
-  populateSettings();saveStore(SETTINGS_KEY,settings);updateLocalPanel();drawPreview();updateCrosshairSaveStatus();
+  populateSettings();syncAudioPreferences(old);saveStore(SETTINGS_KEY,settings);updateLocalPanel();drawPreview();updateCrosshairSaveStatus();
 }
 for(const id of ['dpiInput','cmInput','soundInput','movingTargets','inputMode','crosshairStyle','crosshairColor','targetColor','backgroundColor'])$(id).addEventListener('change',readSettingsInputs);
 for(const id of ['fovInput','volumeInput','targetColor','backgroundColor'])$(id).addEventListener('input',readSettingsInputs);
@@ -386,17 +393,114 @@ function spawnTarget(excludedCell=-1,bornAt=session.motionMs||0,excludedTarget=n
 function initTargets(){targets=[];for(let i=0;i<MODES[session.mode].count;i++)targets.push(spawnTarget());renderDirty=true;}
 function createSession(){session={mode:settings.mode,settings:{...settings},score:0,hits:0,shots:0,streak:0,maxStreak:0,intervalSum:0,intervalCount:0,lastHit:null,saved:false,motionMs:0};elapsedBank=0;runStart=0;yaw=0;pitch=0;initTargets();}
 function elapsed(now=performance.now()){return Math.min(DURATION,elapsedBank+(state==='running'?Math.max(0,now-runStart):0));}
-function audioReady(){if(!settings.sound)return;try{if(!audio){const Audio=window.AudioContext||window.webkitAudioContext;if(Audio)audio=new Audio({latencyHint:'interactive'});}if(audio&&audio.state==='suspended')audio.resume().catch(()=>{});}catch{/* Silent mode is a valid fallback. */}}
-function playTone(kind){
-  const s=session?.settings??settings;if(!s.sound||!s.volume||!audio||audio.state!=='running')return;
-  try{const now=audio.currentTime,osc=audio.createOscillator(),gain=audio.createGain();const frequency=kind==='hit'?1050:kind==='miss'?180:640;osc.type='sine';osc.frequency.setValueAtTime(frequency,now);osc.frequency.exponentialRampToValueAtTime(frequency*(kind==='hit'?.65:.85),now+.04);gain.gain.setValueAtTime(.0001,now);gain.gain.exponentialRampToValueAtTime(.10*s.volume/100,now+.002);gain.gain.exponentialRampToValueAtTime(.0001,now+.05);osc.connect(gain);gain.connect(audio.destination);osc.start(now);osc.stop(now+.06);osc.onended=()=>{osc.disconnect();gain.disconnect();};}catch{/* Audio must never interrupt scoring. */}
+// Audible, gesture-unlocked Web Audio, with recovery and a user-verifiable preview.
+function currentAudioSettings(){return session&&['locking','countdown','running','paused'].includes(state)?session.settings:settings;}
+function updateAudioStatus(){
+  const enabled=settings.sound&&settings.volume>0;let text,warning=false;
+  if(!settings.sound)text='命中音效已关闭。';
+  else if(settings.volume===0){text='音量为 0%，当前静音。';warning=true;}
+  else if(audioNote){text=audioNote;warning=audioNoteWarning;}
+  else if(audio?.state==='running')text='音效已就绪，可点击试听检查。';
+  else if(audio){text='声音暂未启用，请点击试听重试。';warning=true;}
+  else text='点击「试听」检查浏览器声音。';
+  $('audioStatus').textContent=text;$('audioStatus').classList.toggle('warning',warning);
+  $('testSoundButton').disabled=!enabled||audioPreviewBusy;$('testSoundButton').textContent=audioPreviewBusy?'试听中':'试听';
+  if(enabled&&warning&&audioNote&&!audioPreviewBusy&&session&&['running','countdown'].includes(state)&&audioWarnedRound!==session){audioWarnedRound=session;toast('音效未能启用。请返回首页点击「试听」，检查网站声音权限。');}
 }
+function makeToneBuffer(context,kind){
+  const duration=kind==='countdown'?.14:kind==='miss'?.12:.13;
+  const buffer=context.createBuffer(1,Math.ceil(context.sampleRate*duration),context.sampleRate),data=buffer.getChannelData(0);
+  const startHz=kind==='hit'?1380:kind==='miss'?260:720,endHz=kind==='hit'?820:kind==='miss'?170:630;
+  let phase=0;
+  for(let i=0;i<data.length;i++){const t=i/context.sampleRate,u=t/duration,f=startHz*Math.pow(endHz/startHz,u);phase+=2*Math.PI*f/context.sampleRate;
+    const attack=Math.min(1,t/.003),tail=Math.min(1,(duration-t)/.018),decay=Math.exp(-t*(kind==='hit'?24:kind==='miss'?26:18));
+    const body=Math.sin(phase)+(kind==='hit'?.20:0)*Math.sin(phase*2);
+    data[i]=body*attack*tail*decay*(kind==='countdown'?.34:.52);
+  }
+  return buffer;
+}
+function stopAudioVoices(previewOnly=false){
+  for(const voice of [...audioVoices]){if(previewOnly&&!voice.preview)continue;try{voice.source.stop();}catch{}try{voice.source.disconnect();voice.gain.disconnect();}catch{}audioVoices.delete(voice);}
+}
+function cancelAudioPreview(){audioPreviewToken++;audioPreviewBusy=false;audioNote='';audioNoteWarning=false;stopAudioVoices(true);}
+function buildAudioEngine(){
+  const Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)throw new Error('unsupported');
+  stopAudioVoices();let context;try{context=new Audio({latencyHint:'interactive'});}catch{context=new Audio();}
+  try{
+    const bus=context.createGain(),limiter=context.createDynamicsCompressor(),meter=context.createAnalyser();
+    bus.gain.value=.75;limiter.threshold.value=-12;limiter.knee.value=4;limiter.ratio.value=12;limiter.attack.value=.003;limiter.release.value=.08;meter.fftSize=1024;meter.smoothingTimeConstant=0;
+    bus.connect(limiter);limiter.connect(meter);meter.connect(context.destination);
+    const buffers={hit:makeToneBuffer(context,'hit'),miss:makeToneBuffer(context,'miss'),countdown:makeToneBuffer(context,'countdown')};
+    audio=context;audioBus=bus;audioMeter=meter;audioBuffers=buffers;
+    context.addEventListener('statechange',()=>{if(audio!==context)return;if(context.state==='running'&&!audioPreviewBusy){audioNote='';audioNoteWarning=false;}updateAudioStatus();});
+  }catch(error){try{context.close().catch(()=>{});}catch{}throw error;}
+}
+async function audioReady(config=currentAudioSettings()){
+  if(!config.sound||config.volume<=0){updateAudioStatus();return false;}
+  try{
+    if(!audio||audio.state==='closed'||!audioBus)buildAudioEngine();
+    const context=audio;
+    if(context.state!=='running'){
+      // Call resume in the original click/keydown stack, including a fresh retry
+      // after suspended/interrupted states. Never retain a permanently pending promise.
+      let timer;const request=context.resume();
+      try{await Promise.race([Promise.resolve(request),new Promise(resolve=>{timer=setTimeout(resolve,1000);})]);}finally{clearTimeout(timer);}
+    }
+    const ready=audio===context&&context.state==='running';
+    if(ready){if(!audioPreviewBusy)audioNote='';audioNoteWarning=false;audioWarnedRound=null;}
+    else{audioNote='浏览器尚未启用声音。点击试听重试，并允许此网站播放声音。';audioNoteWarning=true;}
+    updateAudioStatus();return ready;
+  }catch(error){audioNote=error.message==='unsupported'?'浏览器不支持网页音效，请使用新版 Chrome、Edge 或 Firefox。':'无法启用声音。请检查网站声音权限，再点击试听重试。';audioNoteWarning=true;updateAudioStatus();return false;}
+}
+function scheduleTone(kind,config,delay=0,preview=false){
+  if(!config.sound||config.volume<=0||!audio||audio.state!=='running'||!audioBus)return false;
+  try{
+    if(audioVoices.size>=12){const oldest=audioVoices.values().next().value;try{oldest.source.stop();}catch{}audioVoices.delete(oldest);}
+    const source=audio.createBufferSource(),gain=audio.createGain();source.buffer=audioBuffers[kind]||audioBuffers.hit;gain.gain.value=config.volume/100;source.connect(gain);gain.connect(audioBus);
+    const voice={source,gain,preview};audioVoices.add(voice);source.onended=()=>{try{source.disconnect();gain.disconnect();}catch{}audioVoices.delete(voice);};
+    // Buffer playback ends naturally. No 60ms wall-clock stop that can expire
+    // before a throttled/interrupted audio device starts rendering.
+    source.start(audio.currentTime+.012+delay);return true;
+  }catch(error){audioNote='声音播放失败，请点击试听重新启用。';audioNoteWarning=true;updateAudioStatus();return false;}
+}
+function playTone(kind){
+  const config=currentAudioSettings();if(!config.sound||config.volume<=0)return;
+  if(audio?.state==='running'){scheduleTone(kind,config);return;}
+  const requestedAt=performance.now(),round=session;
+  audioReady(config).then(ready=>{if(ready&&session===round&&performance.now()-requestedAt<250&&['running','countdown'].includes(state))scheduleTone(kind,config);});
+}
+function syncAudioPreferences(previous){
+  if(previous.sound!==settings.sound||previous.volume!==settings.volume){
+    audioNote='';audioNoteWarning=false;
+    if(!settings.sound||settings.volume===0){cancelAudioPreview();stopAudioVoices();}
+    else for(const voice of audioVoices)if(voice.preview){try{voice.gain.gain.setTargetAtTime(settings.volume/100,audio.currentTime,.008);}catch{}}
+  }
+  updateAudioStatus();
+}
+async function testSound(){
+  readSettingsInputs();if(!settings.sound||settings.volume<=0)return;
+  cancelAudioPreview();const token=audioPreviewToken;audioPreviewBusy=true;audioLastTestPeak=0;audioNote='正在启用声音…';audioNoteWarning=false;updateAudioStatus();
+  const ready=await audioReady(settings);if(token!==audioPreviewToken)return;
+  if(!ready){audioPreviewBusy=false;updateAudioStatus();return;}
+  const config={...settings};audioNote='正在试听：三声命中提示。';audioNoteWarning=false;updateAudioStatus();
+  let scheduled=true;for(let i=0;i<3;i++)scheduled=scheduleTone('hit',config,i*.27,true)&&scheduled;
+  const meter=audioMeter,samples=new Float32Array(meter.fftSize);
+  await new Promise(resolve=>{let timer;const started=performance.now();const check=()=>{if(token!==audioPreviewToken){clearInterval(timer);resolve();return;}try{meter.getFloatTimeDomainData(samples);for(const sample of samples)audioLastTestPeak=Math.max(audioLastTestPeak,Math.abs(sample));}catch{}if(performance.now()-started>=850){clearInterval(timer);resolve();}};timer=setInterval(check,16);check();});
+  if(token!==audioPreviewToken)return;audioPreviewBusy=false;
+  if(scheduled&&audioLastTestPeak>.00001){audioNote='试听结束。若没听到，请检查标签页静音、系统音量和输出设备。';audioNoteWarning=false;}
+  else{audioNote='未检测到声音信号。请允许网站播放声音，再点击试听重试。';audioNoteWarning=true;}
+  updateAudioStatus();
+}
+$('testSoundButton').addEventListener('click',testSound);
+$('soundInput').addEventListener('change',()=>{if(settings.sound&&settings.volume>0)audioReady(settings);});
+$('volumeInput').addEventListener('input',()=>{if(settings.sound&&settings.volume>0&&audio?.state!=='running')audioReady(settings);});
+
 function showOverlay(card){$('gameOverlay').hidden=false;for(const id of ['pauseCard','lockCard','resultCard','errorCard'])$(id).hidden=id!==card;const target=$(card).querySelector('button');if(target)requestAnimationFrame(()=>{if(!$(card).hidden)target.focus({preventScroll:true});});}
 function hideOverlay(){$('gameOverlay').hidden=true;for(const id of ['pauseCard','lockCard','resultCard','errorCard'])$(id).hidden=true;}
 function configureArena(){const s=session.settings;canvas.classList.toggle('cursor-mode',s.input==='cursor');$('crosshair').hidden=s.input==='cursor';$('centerHint').hidden=s.input==='cursor';$('hudMode').textContent=MODES[session.mode].name.toUpperCase();$('hudInput').textContent=inputName(s.input)+' · '+motionName(s.movingTargets)+' · 60 秒';$('inputBadge').textContent=s.input==='fps'?'鼠标已锁定':'兼容模式 · 直接点靶';applyCrosshairSettings(s);$('hitmarker').classList.remove('visible');$('missIndicator').classList.remove('visible');updateHud(performance.now(),true);}
 function startTraining(){
   if(state==='locking')return;
-  readSettingsInputs();audioReady();clearTimeout(lockTimer);lockRequestId++;hideOverlay();$('countdown').hidden=true;createSession();$('launcher').hidden=true;$('arena').hidden=false;document.body.style.overflow='hidden';configureArena();
+  readSettingsInputs();cancelAudioPreview();audioReady(settings);clearTimeout(lockTimer);lockRequestId++;hideOverlay();$('countdown').hidden=true;createSession();$('launcher').hidden=true;$('arena').hidden=false;document.body.style.overflow='hidden';configureArena();
   try{if(!renderer)renderer=new Renderer(canvas);renderer.resize();renderer.draw();}catch(error){state='error';$('rendererError').textContent=error.message;showOverlay('errorCard');return;}
   if(settings.input==='fps'){state='locking';lockAction='new';requestLock();}else beginCountdown('new');
   ensureFrame();
@@ -428,11 +532,13 @@ function pauseTraining(message='训练已暂停，计时已停止。点击继续
   if(!['running','countdown'].includes(state))return;
   const now=performance.now();if(state==='running'){elapsedBank=elapsed(now);if(elapsedBank>=DURATION){finishSession();return;}}
   if(session.settings.movingTargets)session.motionMs=elapsedBank;
+  stopAudioVoices();
   state='paused';$('countdown').hidden=true;exitLock();$('pauseText').textContent=message;$('pauseScore').textContent=number(session.score);$('pauseTime').textContent=((DURATION-elapsedBank)/1000).toFixed(1)+'s';$('pauseAccuracy').textContent=accuracy(session.shots,session.hits);showOverlay('pauseCard');updateHud(now,true);
 }
 function resumeTraining(){if(state!=='paused'&&state!=='locking')return;audioReady();lockAction='resume';if(session.settings.input==='fps')requestLock();else beginCountdown('resume');}
 function restartTraining(){if(!session)return;startTraining();}
 function returnToMenu(){
+  cancelAudioPreview();stopAudioVoices();
   state='menu';lockRequestId++;clearTimeout(lockTimer);exitLock();cancelAnimationFrame(rafId);rafId=0;$('arena').hidden=true;$('launcher').hidden=false;document.body.style.overflow='';hideOverlay();$('countdown').hidden=true;canvas.classList.remove('locked');populateSettings();updateLocalPanel();drawPreview();$('startButton').focus({preventScroll:true});
 }
 function ensureFrame(){if(!rafId){fpsStart=performance.now();fpsFrames=0;rafId=requestAnimationFrame(frame);}}
