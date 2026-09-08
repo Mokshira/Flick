@@ -57,6 +57,7 @@ dialog{background:var(--surface);color:var(--ink);border:1px solid var(--line);b
 @media(max-width:800px){.ch-layout{grid-template-columns:1fr}.ch-controls{margin-top:0}.ch-detail-card{grid-template-columns:220px 1fr}.ch-hero{padding-top:28px}.ch-visuals{min-width:0}}
 @media(max-width:560px){.ch-header{min-height:72px;gap:12px}.ch-header-actions{gap:8px}.ch-save{display:none}.ch-back{font-size:14px}.ch-header .primary{font-size:14px;min-height:44px;padding:8px 14px}.ch-preview-head{padding:14px 16px}.ch-preview-head h2{font-size:18px}.ch-preview-head>span{font-size:14px}.ch-scene{height:240px}.ch-scene-caption{font-size:14px;left:12px;right:12px;max-width:calc(100% - 24px)}.ch-backgrounds{gap:4px;padding:8px}.ch-backgrounds>span{margin-left:4px;font-size:14px}.ch-backgrounds button{padding:8px;min-width:52px}.ch-detail-card{grid-template-columns:1fr;min-height:0}.ch-detail-stage{height:210px}.ch-detail-copy{padding:20px}.ch-presets{grid-template-columns:repeat(2,1fr);gap:10px}.ch-presets button{min-height:80px;flex-direction:row;gap:10px}.ch-presets-heading h2{font-size:18px}.ch-controls{padding:20px}.ch-ranges{gap:8px 20px}.ch-footnote{margin-top:16px}.ch-layout{gap:24px}.crosshair-page .hero h1{font-size:30px}}
 
+.motion-setting{grid-column:1/-1;border-top:1px solid var(--line);padding-top:8px;margin-top:12px}.motion-setting .field-hint{margin-top:0;font-size:14px;line-height:1.65}.motion-setting .switch-row{font-weight:550}
 </style>
 </head>
 <body>
@@ -100,6 +101,7 @@ dialog{background:var(--surface);color:var(--ink);border:1px solid var(--line);b
       <div class="settings-divider"></div>
       <div class="field" style="margin-bottom:0"><div class="range-label"><label for="fovInput">水平视野 <span class="muted">/ 16:9</span></label><output id="fovValue" for="fovInput">103°</output></div><input type="range" id="fovInput" min="80" max="120" step="1" value="103"></div>
       <label class="switch-row" style="grid-column:1/-1" for="soundInput"><span>命中音效</span><input type="checkbox" id="soundInput" checked role="switch" aria-label="命中音效"></label>
+      <div class="motion-setting"><label class="switch-row" for="movingTargets"><span>水平变速移动</span><input type="checkbox" id="movingTargets" role="switch" aria-label="小球水平变速移动" aria-describedby="motionHint"></label><p id="motionHint" class="field-hint">开启后，每颗球保持自身高度，左右变速移动。</p></div>
       <details class="advanced"><summary>更多设置<svg class="icon" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></svg></summary><div class="advanced-body">
         <div class="field"><label class="field-label" for="inputMode">输入模式</label><select id="inputMode"><option value="fps">锁定鼠标 · 第一人称</option><option value="cursor">光标点靶 · 兼容模式</option></select><p class="field-hint" id="inputHelp">准星固定在中心，移动鼠标转动视角。</p></div>
         <button class="secondary editor-entry" id="openCrosshairSettings">打开准星调节页面 <span aria-hidden="true">↗</span></button>
@@ -188,12 +190,13 @@ dialog{background:var(--surface);color:var(--ink);border:1px solid var(--line);b
   <div class="help-section"><h3>一局 60 秒</h3><p>3 秒准备倒计时不计入训练时间。单击左键射击，不支持按住连射。命中 +100，打空 −50，最低 0 分；切出页面、失焦或解除鼠标锁定会自动暂停。放弃或重开的未完成局不保存。</p></div>
   <div class="help-section"><h3>键位</h3><div class="keyboard-grid"><div>射击<kbd>左键</kbd></div><div>暂停<kbd>Esc</kbd></div><div>重新开始<kbd>R</kbd></div><div>视角回正<kbd>C</kbd></div><div>切换全屏<kbd>F</kbd></div><div>继续训练<kbd>点击按钮</kbd></div></div></div>
   <div class="help-section"><h3>让灵敏度接近你的游戏</h3><p>填写鼠标实际 DPI，以及转一整圈需要移动的厘米数（cm / 360°）。后者越大，灵敏度越低。本版按 <span class="mono">360 × 2.54 ÷ (DPI × cm)</span> 计算每个鼠标计数对应的角度。</p><p>视野设置是 16:9 基准水平 FOV；改变窗口比例时保持垂直视野不变。原始输入是否可用由浏览器与系统决定，不能保证与原游戏的手感完全相同。建议使用鼠标、开启浏览器硬件加速，并实测校准。</p></div>
+  <div class="help-section"><h3>水平变速移动</h3><p>首页的「水平变速移动」开关默认关闭。开启后，每颗球固定在自己的出生高度，只沿水平方向左右移动，速度会持续变化并随机换向；边界会反弹，同一行的目标不会互相穿过。不是所有球都被放到同一个高度。</p><p>准备倒计时、暂停、切出窗口及准星设置期间，小球不移动。关闭开关后，新一局恢复经典静止模式。静止与移动成绩分开记录，旧成绩保留为静止成绩。</p></div>
   <div class="help-section"><h3>准星设置页</h3><p>首页右上角「准星设置」打开独立调节页面，支持颜色、线长、粗细、间距、不透明度、中心点、T 形和描边设置，并提供原尺寸 / 2 倍预览与四个预设。设置自动保存。暂停菜单也可以打开设置页，返回后保留本局计时与分数。</p><p>预览页可以临时切换深浅背景，不影响实际训练配色。锁定鼠标模式使用中心准星，兼容点靶模式使用相同造型的鼠标指针；浏览器不支持自定义指针时回退为十字光标。</p></div>
   <div class="help-section"><h3>自定义训练配色</h3><p>首页「场景配色」可分别修改小球颜色与训练背景。点击色块打开取色器，预览会立即更新；两种训练模式均使用这套配色，下次打开也会保留。背景保留网格与明暗层次，实际小球也有光照，因此不会是完全均匀的纯色。</p><p>「恢复默认」只重置小球和背景颜色，不影响灵敏度、准星或历史成绩。颜色太接近时会提示你提高对比度。</p></div>
-  <div class="help-section"><h3>浏览器与兼容模式</h3><p>推荐电脑端 Chrome / Edge / Firefox，以 HTTPS 或 localhost 打开。嵌入预览可能禁止锁定鼠标，请打开部署后的独立页面。也可切换「光标点靶」：直接点击目标，不转动视角，DPI 与 cm / 360° 在该模式下不生效；两种输入方式的最佳成绩分开记录。</p></div>
+  <div class="help-section"><h3>浏览器与兼容模式</h3><p>推荐电脑端 Chrome / Edge / Firefox，以 HTTPS 或 localhost 打开。嵌入预览可能禁止锁定鼠标，请打开部署后的独立页面。也可切换「光标点靶」：直接点击目标，不转动视角，DPI 与 cm / 360° 在该模式下不生效；输入方式与静止/移动模式的最佳成绩分别记录。</p></div>
   <div class="help-section"><h3>只有你自己的记录</h3><p>仅在当前浏览器保存最近 50 次完整训练与各模式历史最佳；不登录、不上传、不使用统计脚本。可以导出 JSON 备份，清除网站数据会删除记录。平均命中间隔只计算相邻命中之间的训练时间，不含暂停。</p><p>这是独立实现，并非 Aimlabs 官方移植。目标尺寸、布局与计分经过简化，分数不与原版互通。</p></div>
 </div></dialog>
-<dialog id="historyDialog" aria-labelledby="historyTitle"><div class="dialog-head"><h2 id="historyTitle">你的训练记录</h2><button class="icon-button close-dialog" aria-label="关闭训练记录"><svg class="icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><div class="dialog-content"><div id="historyEmpty" class="history-empty"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 1v6m0 10v6M1 12h6m10 0h6"/></svg><h3>第一枪，还在等你。</h3><p>完成一局训练后，你的成绩会出现在这里。</p></div><div class="history-list" id="historyList"></div><div class="history-actions" id="historyActions" hidden><button class="secondary" id="exportButton">导出全部记录 · JSON</button><button class="secondary danger" id="clearHistoryButton">清空本地成绩</button></div><p class="history-note">保留最近 50 次完整训练，历史最佳单独保留。成绩只存本机，锁定鼠标与光标点靶分开比较。</p></div></dialog>
+<dialog id="historyDialog" aria-labelledby="historyTitle"><div class="dialog-head"><h2 id="historyTitle">你的训练记录</h2><button class="icon-button close-dialog" aria-label="关闭训练记录"><svg class="icon" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></svg></button></div><div class="dialog-content"><div id="historyEmpty" class="history-empty"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 1v6m0 10v6M1 12h6m10 0h6"/></svg><h3>第一枪，还在等你。</h3><p>完成一局训练后，你的成绩会出现在这里。</p></div><div class="history-list" id="historyList"></div><div class="history-actions" id="historyActions" hidden><button class="secondary" id="exportButton">导出全部记录 · JSON</button><button class="secondary danger" id="clearHistoryButton">清空本地成绩</button></div><p class="history-note">保留最近 50 次完整训练，历史最佳单独保留。成绩只存本机，输入方式和静止/移动模式分别比较。</p></div></dialog>
 <dialog id="clearDialog" aria-labelledby="clearTitle"><div class="dialog-head"><h2 id="clearTitle">清空本地成绩？</h2></div><div class="dialog-content"><p>所有训练记录与历史最佳都会删除，设置不受影响。建议先导出 JSON 备份。</p><div class="history-actions"><button class="secondary" id="cancelClearButton">保留记录</button><button class="primary" id="confirmClearButton">确认清空</button></div></div></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 <script>
@@ -204,7 +207,7 @@ const MODES = Object.freeze({
   sixshot: {name:'Sixshot Ultimate', short:'Sixshot', count:6, radius:0.18, columns:11, rows:7, stepX:0.96, stepY:0.9, focus:'精准切换', title:'先瞄准，再加速。', description:'6 个小目标同时在场，击中后立即补充。', tip:'宁可稍慢，也要停稳再开枪。不要让准星掠过目标。'},
   gridshot: {name:'Gridshot', short:'Gridshot', count:3, radius:0.52, columns:5, rows:5, stepX:1.55, stepY:1.55, focus:'速度节奏', title:'找到节奏，连续命中。', description:'3 个大目标同时在场，击中后立即补充。', tip:'先建立稳定的点击节奏，再逐渐加速。少打空，比盲目抢速度更有效。'}
 });
-const DEFAULTS = Object.freeze({mode:'sixshot',dpi:800,cm:40,fov:103,sound:true,volume:35,input:'fps',crosshair:'cross',color:'#ffffff',targetColor:'#2990f0',backgroundColor:'#1d2730',...cleanCrosshairExtras({})});
+const DEFAULTS = Object.freeze({mode:'sixshot',dpi:800,cm:40,fov:103,sound:true,volume:35,input:'fps',crosshair:'cross',color:'#ffffff',targetColor:'#2990f0',backgroundColor:'#1d2730',movingTargets:false,...cleanCrosshairExtras({})});
 const SETTINGS_KEY='flick.settings.v1', HISTORY_KEY='flick.history.v1', BEST_KEY='flick.bests.v1';
 const DURATION=60000, DEPTH=-11.8, TWO_PI=Math.PI*2;
 let storageOK=true;
@@ -216,19 +219,19 @@ function hexRgb(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)/255);}
 function rgbCss(v,alpha=1){return 'rgba('+v.map(n=>Math.round(Math.min(1,Math.max(0,n))*255)).join(',')+','+alpha+')';}
 function mixColor(a,b,amount){return a.map((v,i)=>v*(1-amount)+b[i]*amount);}
 function luminance(v){const c=v.map(n=>n<=.04045?n/12.92:Math.pow((n+.055)/1.055,2.4));return c[0]*.2126+c[1]*.7152+c[2]*.0722;}
-function cleanSettings(raw){const x=(raw&&typeof raw==='object')?raw:{};return {mode:MODES[x.mode]?x.mode:DEFAULTS.mode,dpi:bounded(x.dpi??800,100,32000,800),cm:bounded(x.cm??40,2,200,40),fov:bounded(x.fov??103,80,120,103),sound:typeof x.sound==='boolean'?x.sound:true,volume:bounded(x.volume??35,0,100,35),input:x.input==='cursor'?'cursor':'fps',crosshair:x.crosshair==='dot'?'dot':'cross',color:validColor(x.color,'#ffffff'),targetColor:validColor(x.targetColor,DEFAULTS.targetColor),backgroundColor:validColor(x.backgroundColor,DEFAULTS.backgroundColor),...cleanCrosshairExtras(x)};}
+function cleanSettings(raw){const x=(raw&&typeof raw==='object')?raw:{};return {mode:MODES[x.mode]?x.mode:DEFAULTS.mode,dpi:bounded(x.dpi??800,100,32000,800),cm:bounded(x.cm??40,2,200,40),fov:bounded(x.fov??103,80,120,103),sound:typeof x.sound==='boolean'?x.sound:true,volume:bounded(x.volume??35,0,100,35),input:x.input==='cursor'?'cursor':'fps',crosshair:x.crosshair==='dot'?'dot':'cross',color:validColor(x.color,'#ffffff'),targetColor:validColor(x.targetColor,DEFAULTS.targetColor),backgroundColor:validColor(x.backgroundColor,DEFAULTS.backgroundColor),movingTargets:x.movingTargets===true,...cleanCrosshairExtras(x)};}
 let settings=cleanSettings(readStore(SETTINGS_KEY,{}));
 function validRecord(r){return r&&MODES[r.mode]&&(r.input==='fps'||r.input==='cursor')&&Number.isFinite(r.score)&&r.score>=0&&Number.isInteger(r.hits)&&r.hits>=0&&Number.isInteger(r.shots)&&r.shots>=r.hits&&Number.isFinite(Date.parse(r.date))&&r.duration===60;}
 let history=readStore(HISTORY_KEY,[]);history=Array.isArray(history)?history.filter(validRecord).slice(0,50):[];
 let bests=readStore(BEST_KEY,{});if(!bests||typeof bests!=='object'||Array.isArray(bests))bests={};
-for(const key of Object.keys(bests)){if(!/^(sixshot|gridshot):(fps|cursor)$/.test(key)||!Number.isFinite(bests[key])||bests[key]<0)delete bests[key];}
-for(const r of history){const key=r.mode+':'+r.input;bests[key]=Math.max(bests[key]??0,r.score);}
+for(const key of Object.keys(bests)){if(!/^(sixshot|gridshot):(fps|cursor)(:moving)?$/.test(key)||!Number.isFinite(bests[key])||bests[key]<0)delete bests[key];}
+for(const r of history){const key=scoreKey(r.mode,r.input,r.movingTargets);bests[key]=Math.max(bests[key]??0,r.score);}
 try{localStorage.setItem('flick.storage-test','1');localStorage.removeItem('flick.storage-test');}catch{storageOK=false;}
 $('storageNotice').hidden=storageOK;
 let state='menu',session=null,targets=[],yaw=0,pitch=0,renderer=null,renderDirty=true;
 let elapsedBank=0,runStart=0,countdownStart=0,countdownDuration=3000,countdownLast=-1;
 let rafId=0,lastHud=0,fpsStart=0,fpsFrames=0,lockAction='new',lockRequestId=0,lockTimer=0;
-let hitTimer=0,missTimer=0,toastTimer=0,audio=null;
+let hitTimer=0,missTimer=0,toastTimer=0,audio=null,motionPreviewRaf=0;
 const canvas=$('scene');
 const intFmt=new Intl.NumberFormat('zh-CN');
 function number(n){return intFmt.format(Math.round(n));}
@@ -236,31 +239,31 @@ function inputName(input){return input==='fps'?'锁定鼠标':'光标点靶';}
 function accuracy(shots,hits,decimals=1){return shots?(hits/shots*100).toFixed(decimals)+'%':'—';}
 function toast(message){$('toast').textContent=message;$('toast').hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').hidden=true,4200);}
 function populateSettings(){
-  $('dpiInput').value=settings.dpi;$('cmInput').value=settings.cm;$('fovInput').value=settings.fov;$('fovValue').textContent=settings.fov+'°';$('soundInput').checked=settings.sound;$('volumeInput').value=settings.volume;$('volumeValue').textContent=settings.volume+'%';$('inputMode').value=settings.input;$('crosshairStyle').value=settings.crosshair;$('crosshairColor').value=settings.color;$('targetColor').value=settings.targetColor;$('backgroundColor').value=settings.backgroundColor;$('targetColorValue').textContent=settings.targetColor.toUpperCase();$('backgroundColorValue').textContent=settings.backgroundColor.toUpperCase();
+  $('dpiInput').value=settings.dpi;$('cmInput').value=settings.cm;$('fovInput').value=settings.fov;$('fovValue').textContent=settings.fov+'°';$('soundInput').checked=settings.sound;$('movingTargets').checked=settings.movingTargets;$('volumeInput').value=settings.volume;$('volumeValue').textContent=settings.volume+'%';$('inputMode').value=settings.input;$('crosshairStyle').value=settings.crosshair;$('crosshairColor').value=settings.color;$('targetColor').value=settings.targetColor;$('backgroundColor').value=settings.backgroundColor;$('targetColorValue').textContent=settings.targetColor.toUpperCase();$('backgroundColorValue').textContent=settings.backgroundColor.toUpperCase();
   const a=luminance(hexRgb(settings.targetColor)),b=luminance(hexRgb(settings.backgroundColor)),low=(Math.max(a,b)+.05)/(Math.min(a,b)+.05)<2;
   $('sceneColorHint').textContent=low?'小球和背景比较接近，建议换成更易区分的配色。':'实时预览，配色自动保存。';$('sceneColorHint').classList.toggle('low-contrast',low);
   $('previewPanel').style.backgroundColor=settings.backgroundColor;$('arena').style.backgroundColor=settings.backgroundColor;
   $('inputHelp').textContent=settings.input==='fps'?'准星固定在中心，移动鼠标转动视角。':'直接点击目标；不模拟视角转动，灵敏度设置不生效。';
   $('startHint').textContent=settings.input==='fps'?'点击后锁定鼠标，Esc 暂停':'直接点靶；Esc 或暂停按钮暂停';
   $('dpiInput').disabled=settings.input==='cursor';$('cmInput').disabled=settings.input==='cursor';
-  populateCrosshairEditor();applyCrosshairSettings(settings);
+  populateCrosshairEditor();applyCrosshairSettings(settings);updateMotionLabels();
 }
 function readSettingsInputs(){
-  const old=settings;settings=cleanSettings({...settings,dpi:$('dpiInput').value||old.dpi,cm:$('cmInput').value||old.cm,fov:$('fovInput').value,sound:$('soundInput').checked,volume:$('volumeInput').value,input:$('inputMode').value,crosshair:$('crosshairStyle').value,color:$('crosshairColor').value,targetColor:$('targetColor').value,backgroundColor:$('backgroundColor').value,...readCrosshairExtras()});
+  const old=settings;settings=cleanSettings({...settings,dpi:$('dpiInput').value||old.dpi,cm:$('cmInput').value||old.cm,fov:$('fovInput').value,sound:$('soundInput').checked,movingTargets:$('movingTargets').checked,volume:$('volumeInput').value,input:$('inputMode').value,crosshair:$('crosshairStyle').value,color:$('crosshairColor').value,targetColor:$('targetColor').value,backgroundColor:$('backgroundColor').value,...readCrosshairExtras()});
   populateSettings();saveStore(SETTINGS_KEY,settings);updateLocalPanel();drawPreview();updateCrosshairSaveStatus();
 }
-for(const id of ['dpiInput','cmInput','soundInput','inputMode','crosshairStyle','crosshairColor','targetColor','backgroundColor'])$(id).addEventListener('change',readSettingsInputs);
+for(const id of ['dpiInput','cmInput','soundInput','movingTargets','inputMode','crosshairStyle','crosshairColor','targetColor','backgroundColor'])$(id).addEventListener('change',readSettingsInputs);
 for(const id of ['fovInput','volumeInput','targetColor','backgroundColor'])$(id).addEventListener('input',readSettingsInputs);
 $('resetSceneColors').addEventListener('click',()=>{$('targetColor').value=DEFAULTS.targetColor;$('backgroundColor').value=DEFAULTS.backgroundColor;readSettingsInputs();toast('已恢复默认的小球和背景颜色。');});
-function selectMode(mode){if(!MODES[mode])return;settings.mode=mode;saveStore(SETTINGS_KEY,settings);for(const b of document.querySelectorAll('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode===mode));const m=MODES[mode];$('previewTitle').textContent=m.title;$('previewDescription').textContent=m.description;$('targetCount').innerHTML=m.count+' <span>个目标</span>';$('modeFocus').textContent=m.focus;$('modeTip').textContent=m.tip;updateLocalPanel();drawPreview();}
+function selectMode(mode){if(!MODES[mode])return;settings.mode=mode;saveStore(SETTINGS_KEY,settings);for(const b of document.querySelectorAll('[data-mode]'))b.setAttribute('aria-pressed',String(b.dataset.mode===mode));const m=MODES[mode];$('previewTitle').textContent=m.title;$('previewDescription').textContent=m.description;$('targetCount').innerHTML=m.count+' <span>个目标</span>';$('modeFocus').textContent=m.focus;$('modeTip').textContent=m.tip;updateMotionLabels();updateLocalPanel();drawPreview();}
 for(const b of document.querySelectorAll('[data-mode]'))b.addEventListener('click',()=>selectMode(b.dataset.mode));
 function updateLocalPanel(){
-  const m=MODES[settings.mode],key=settings.mode+':'+settings.input,best=bests[key];
-  $('bestLabel').textContent='本地最佳 / '+m.short;
+  const m=MODES[settings.mode],key=scoreKey(settings.mode,settings.input,settings.movingTargets),best=bests[key];
+  $('bestLabel').textContent='本地最佳 / '+m.short+' · '+motionName(settings.movingTargets);
   $('bestValue').replaceChildren(document.createTextNode(best!==undefined?number(best):'—'));
   let span=document.createElement('span');span.textContent=best!==undefined?inputName(settings.input):'完成一局后记录';$('bestValue').append(span);
   const last=history[0];$('lastValue').replaceChildren(document.createTextNode(last?number(last.score)+' 分':'还没开始'));
-  span=document.createElement('span');span.textContent=last?MODES[last.mode].short+' · '+accuracy(last.shots,last.hits):'从 60 秒开始';$('lastValue').append(span);
+  span=document.createElement('span');span.textContent=last?MODES[last.mode].short+' · '+motionName(last.movingTargets)+' · '+accuracy(last.shots,last.hits):'从 60 秒开始';$('lastValue').append(span);
 }
 // A deliberately schematic preview: the actual practice arena uses 3D ray intersections.
 function drawPreview(){
@@ -274,7 +277,7 @@ function drawPreview(){
   for(let i=-5;i<=5;i++){ctx.beginPath();ctx.moveTo(w/2+i*42,h-70);ctx.lineTo(w/2+i*80,h);ctx.stroke();}
   const pos=settings.mode==='sixshot'?[[.28,.35],[.48,.26],[.68,.37],[.39,.54],[.59,.57],[.76,.51]]:[[.34,.31],[.66,.34],[.5,.58]];
   const radius=settings.mode==='sixshot'?Math.max(5.5,Math.min(8,w*.012)):Math.max(16,Math.min(24,w*.035));
-  for(const [x,y] of pos){const px=x*w,py=y*h;ctx.fillStyle='#080e1840';ctx.beginPath();ctx.ellipse(px+3,py+radius*.8,radius*1.1,radius*.55,0,0,Math.PI*2);ctx.fill();const g=ctx.createRadialGradient(px-radius*.32,py-radius*.38,radius*.05,px,py,radius);g.addColorStop(0,rgbCss(mixColor(ball,[1,1,1],.5)));g.addColorStop(.35,rgbCss(mixColor(ball,[1,1,1],.12)));g.addColorStop(.8,rgbCss(ball));g.addColorStop(1,rgbCss(mixColor(ball,[0,0,0],.35)));ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,radius,0,Math.PI*2);ctx.fill();ctx.strokeStyle=rgbCss(mixColor(ball,[1,1,1],.3),.6);ctx.lineWidth=.7;ctx.stroke();}
+  for(const [i,[x,y]] of pos.entries()){const dx=settings.movingTargets?.055*Math.sin(performance.now()*(.0007+i*.00016)+i*1.7):0;const px=(x+dx)*w,py=y*h;ctx.fillStyle='#080e1840';ctx.beginPath();ctx.ellipse(px+3,py+radius*.8,radius*1.1,radius*.55,0,0,Math.PI*2);ctx.fill();const g=ctx.createRadialGradient(px-radius*.32,py-radius*.38,radius*.05,px,py,radius);g.addColorStop(0,rgbCss(mixColor(ball,[1,1,1],.5)));g.addColorStop(.35,rgbCss(mixColor(ball,[1,1,1],.12)));g.addColorStop(.8,rgbCss(ball));g.addColorStop(1,rgbCss(mixColor(ball,[0,0,0],.35)));ctx.fillStyle=g;ctx.beginPath();ctx.arc(px,py,radius,0,Math.PI*2);ctx.fill();ctx.strokeStyle=rgbCss(mixColor(ball,[1,1,1],.3),.6);ctx.lineWidth=.7;ctx.stroke();}
   drawCrosshair2D(ctx,w*.5,h*.43,settings);
 }
 new ResizeObserver(()=>{if(state==='menu')drawPreview();else{if(renderer)renderer.resize();renderDirty=true;}}).observe(document.body);
@@ -366,14 +369,22 @@ function tanHalf(){return Math.tan((session?.settings.fov??settings.fov)*Math.PI
 function normalize(v){const l=Math.hypot(...v);return v.map(n=>n/l);}
 function rayAt(clientX,clientY){const b=basis();if(session.settings.input==='fps')return b.forward;const r=canvas.getBoundingClientRect();const x=((clientX-r.left)/r.width*2-1)*r.width/r.height*tanHalf(),y=(1-(clientY-r.top)/r.height*2)*tanHalf();return normalize(b.forward.map((v,i)=>v+b.right[i]*x+b.up[i]*y));}
 function intersect(ray,t){const b=ray[0]*t.x+ray[1]*t.y+ray[2]*t.z;const h=b*b-(t.x*t.x+t.y*t.y+t.z*t.z)+t.radius*t.radius;if(h<0)return Infinity;const distance=b-Math.sqrt(h);return distance>0?distance:Infinity;}
-function spawnTarget(excludedCell=-1){
-  const m=MODES[session.mode],used=new Set(targets.map(t=>t.cell));used.add(excludedCell);const available=[];
-  for(let cell=0;cell<m.columns*m.rows;cell++)if(!used.has(cell))available.push(cell);
-  const cell=available[Math.floor(Math.random()*available.length)];
-  return {cell,x:((cell%m.columns)-(m.columns-1)/2)*m.stepX,y:(Math.floor(cell/m.columns)-(m.rows-1)/2)*m.stepY,z:DEPTH,radius:m.radius};
+function spawnTarget(excludedCell=-1,bornAt=session.motionMs||0,excludedTarget=null){
+  const m=MODES[session.mode],moving=session.settings.movingTargets,used=new Set(targets.map(t=>t.cell));used.add(excludedCell);const available=[];
+  for(let cell=0;cell<m.columns*m.rows;cell++){
+    if(used.has(cell))continue;
+    const x=((cell%m.columns)-(m.columns-1)/2)*m.stepX,y=(Math.floor(cell/m.columns)-(m.rows-1)/2)*m.stepY;
+    if(moving&&targets.some(t=>Math.hypot(t.x-x,t.y-y)<t.radius+m.radius+.04))continue;
+    if(moving&&excludedTarget&&Math.hypot(excludedTarget.x-x,excludedTarget.y-y)<m.radius*2+.04)continue;
+    available.push({cell,x,y,z:DEPTH,radius:m.radius});
+  }
+  const target=available[Math.floor(Math.random()*available.length)];
+  // With at most six targets and at least five rows, an empty row always exists.
+  if(!target)throw new Error('训练目标没有可用的生成位置。');
+  return moving?initTargetMotion(target,bornAt):target;
 }
 function initTargets(){targets=[];for(let i=0;i<MODES[session.mode].count;i++)targets.push(spawnTarget());renderDirty=true;}
-function createSession(){session={mode:settings.mode,settings:{...settings},score:0,hits:0,shots:0,streak:0,maxStreak:0,intervalSum:0,intervalCount:0,lastHit:null,saved:false};elapsedBank=0;runStart=0;yaw=0;pitch=0;initTargets();}
+function createSession(){session={mode:settings.mode,settings:{...settings},score:0,hits:0,shots:0,streak:0,maxStreak:0,intervalSum:0,intervalCount:0,lastHit:null,saved:false,motionMs:0};elapsedBank=0;runStart=0;yaw=0;pitch=0;initTargets();}
 function elapsed(now=performance.now()){return Math.min(DURATION,elapsedBank+(state==='running'?Math.max(0,now-runStart):0));}
 function audioReady(){if(!settings.sound)return;try{if(!audio){const Audio=window.AudioContext||window.webkitAudioContext;if(Audio)audio=new Audio({latencyHint:'interactive'});}if(audio&&audio.state==='suspended')audio.resume().catch(()=>{});}catch{/* Silent mode is a valid fallback. */}}
 function playTone(kind){
@@ -382,7 +393,7 @@ function playTone(kind){
 }
 function showOverlay(card){$('gameOverlay').hidden=false;for(const id of ['pauseCard','lockCard','resultCard','errorCard'])$(id).hidden=id!==card;const target=$(card).querySelector('button');if(target)requestAnimationFrame(()=>{if(!$(card).hidden)target.focus({preventScroll:true});});}
 function hideOverlay(){$('gameOverlay').hidden=true;for(const id of ['pauseCard','lockCard','resultCard','errorCard'])$(id).hidden=true;}
-function configureArena(){const s=session.settings;canvas.classList.toggle('cursor-mode',s.input==='cursor');$('crosshair').hidden=s.input==='cursor';$('centerHint').hidden=s.input==='cursor';$('hudMode').textContent=MODES[session.mode].name.toUpperCase();$('hudInput').textContent=inputName(s.input)+' · 60 秒';$('inputBadge').textContent=s.input==='fps'?'鼠标已锁定':'兼容模式 · 直接点靶';applyCrosshairSettings(s);$('hitmarker').classList.remove('visible');$('missIndicator').classList.remove('visible');updateHud(performance.now(),true);}
+function configureArena(){const s=session.settings;canvas.classList.toggle('cursor-mode',s.input==='cursor');$('crosshair').hidden=s.input==='cursor';$('centerHint').hidden=s.input==='cursor';$('hudMode').textContent=MODES[session.mode].name.toUpperCase();$('hudInput').textContent=inputName(s.input)+' · '+motionName(s.movingTargets)+' · 60 秒';$('inputBadge').textContent=s.input==='fps'?'鼠标已锁定':'兼容模式 · 直接点靶';applyCrosshairSettings(s);$('hitmarker').classList.remove('visible');$('missIndicator').classList.remove('visible');updateHud(performance.now(),true);}
 function startTraining(){
   if(state==='locking')return;
   readSettingsInputs();audioReady();clearTimeout(lockTimer);lockRequestId++;hideOverlay();$('countdown').hidden=true;createSession();$('launcher').hidden=true;$('arena').hidden=false;document.body.style.overflow='hidden';configureArena();
@@ -416,6 +427,7 @@ document.addEventListener('pointerlockerror',()=>{/* Promise rejection or the fi
 function pauseTraining(message='训练已暂停，计时已停止。点击继续后倒计时恢复。'){
   if(!['running','countdown'].includes(state))return;
   const now=performance.now();if(state==='running'){elapsedBank=elapsed(now);if(elapsedBank>=DURATION){finishSession();return;}}
+  if(session.settings.movingTargets)session.motionMs=elapsedBank;
   state='paused';$('countdown').hidden=true;exitLock();$('pauseText').textContent=message;$('pauseScore').textContent=number(session.score);$('pauseTime').textContent=((DURATION-elapsedBank)/1000).toFixed(1)+'s';$('pauseAccuracy').textContent=accuracy(session.shots,session.hits);showOverlay('pauseCard');updateHud(now,true);
 }
 function resumeTraining(){if(state!=='paused'&&state!=='locking')return;audioReady();lockAction='resume';if(session.settings.input==='fps')requestLock();else beginCountdown('resume');}
@@ -432,6 +444,7 @@ function frame(now){
     else{const n=Math.ceil(remaining/1000);if(n!==countdownLast){countdownLast=n;$('countdownNumber').textContent=String(n);playTone('countdown');}}
   }
   if(state==='running'&&elapsed(now)>=DURATION){finishSession();}
+  if(state==='running')advanceTargetMotion(elapsed(now));
   if(renderDirty&&renderer)renderer.draw();
   if(now-lastHud>=50){updateHud(now);lastHud=now;}
   fpsFrames++;if(now-fpsStart>=750){$('fpsLabel').textContent=Math.round(fpsFrames*1000/(now-fpsStart))+' FPS';fpsStart=now;fpsFrames=0;}
@@ -447,7 +460,7 @@ function shoot(clientX,clientY){
   if(index>=0){
     session.hits++;session.score+=100;session.streak++;session.maxStreak=Math.max(session.maxStreak,session.streak);
     if(session.lastHit!==null){session.intervalSum+=at-session.lastHit;session.intervalCount++;}session.lastHit=at;
-    const cell=targets[index].cell;targets.splice(index,1);targets.push(spawnTarget(cell));renderDirty=true;playTone('hit');
+    const removed=targets[index],cell=removed.cell;targets.splice(index,1);targets.push(spawnTarget(cell,at,removed));renderDirty=true;playTone('hit');
     $('hitmarker').classList.add('visible');clearTimeout(hitTimer);hitTimer=setTimeout(()=>$('hitmarker').classList.remove('visible'),55);
   }else{session.score=Math.max(0,session.score-50);session.streak=0;playTone('miss');$('missIndicator').classList.add('visible');clearTimeout(missTimer);missTimer=setTimeout(()=>$('missIndicator').classList.remove('visible'),65);}
   updateHud(now,true);
@@ -463,10 +476,10 @@ document.addEventListener('mousemove',event=>{
 function finishSession(){
   if(!session||session.saved||state==='results')return;
   elapsedBank=DURATION;state='results';session.saved=true;$('countdown').hidden=true;exitLock();
-  const key=session.mode+':'+session.settings.input,previous=bests[key],isBest=previous===undefined||session.score>previous;
-  const record={version:1,date:new Date().toISOString(),mode:session.mode,input:session.settings.input,duration:60,score:session.score,hits:session.hits,shots:session.shots,accuracy:session.shots?+(session.hits/session.shots*100).toFixed(2):null,hitsPerSecond:+(session.hits/60).toFixed(3),averageHitIntervalMs:session.intervalCount?Math.round(session.intervalSum/session.intervalCount):null,maxStreak:session.maxStreak,settings:{...session.settings}};
+  const key=scoreKey(session.mode,session.settings.input,session.settings.movingTargets),previous=bests[key],isBest=previous===undefined||session.score>previous;
+  const record={version:1,date:new Date().toISOString(),mode:session.mode,input:session.settings.input,movingTargets:session.settings.movingTargets,duration:60,score:session.score,hits:session.hits,shots:session.shots,accuracy:session.shots?+(session.hits/session.shots*100).toFixed(2):null,hitsPerSecond:+(session.hits/60).toFixed(3),averageHitIntervalMs:session.intervalCount?Math.round(session.intervalSum/session.intervalCount):null,maxStreak:session.maxStreak,settings:{...session.settings}};
   history.unshift(record);history=history.slice(0,50);if(isBest)bests[key]=session.score;saveStore(HISTORY_KEY,history);saveStore(BEST_KEY,bests);
-  $('resultMode').textContent=MODES[session.mode].name.toUpperCase()+' / 60s';$('resultTitle').textContent=session.shots===0?'热身结束，下一局开枪。':isBest&&previous!==undefined?'新的最佳，手感在线。':'一轮结束，保持手感。';$('newBestTag').hidden=!isBest||session.shots===0;$('newBestTag').textContent=previous===undefined?'首个完整成绩':'新的个人最佳';$('resultScore').textContent=number(session.score);$('resultBest').textContent=inputName(session.settings.input)+'最佳 '+number(bests[key]);$('resultAccuracy').textContent=accuracy(session.shots,session.hits);$('resultHits').textContent=session.hits+' / '+session.shots;$('resultHps').textContent=(session.hits/60).toFixed(2);$('resultInterval').textContent=record.averageHitIntervalMs!==null?record.averageHitIntervalMs+' ms':'—';$('resultStreak').textContent=session.maxStreak;$('resultMisses').textContent=session.shots-session.hits;
+  $('resultMode').textContent=MODES[session.mode].name.toUpperCase()+' / 60s';$('resultTitle').textContent=session.shots===0?'热身结束，下一局开枪。':isBest&&previous!==undefined?'新的最佳，手感在线。':'一轮结束，保持手感。';$('newBestTag').hidden=!isBest||session.shots===0;$('newBestTag').textContent=previous===undefined?'首个完整成绩':'新的个人最佳';$('resultScore').textContent=number(session.score);$('resultBest').textContent=motionName(session.settings.movingTargets)+' / '+inputName(session.settings.input)+'最佳 '+number(bests[key]);$('resultAccuracy').textContent=accuracy(session.shots,session.hits);$('resultHits').textContent=session.hits+' / '+session.shots;$('resultHps').textContent=(session.hits/60).toFixed(2);$('resultInterval').textContent=record.averageHitIntervalMs!==null?record.averageHitIntervalMs+' ms':'—';$('resultStreak').textContent=session.maxStreak;$('resultMisses').textContent=session.shots-session.hits;
   $('resultAdvice').textContent=session.shots===0?'没有开枪也没关系。下一局试着先稳稳命中，再提高速度。':session.hits/session.shots<.85?'稍微放慢节奏，确认准星停在目标上再开枪。稳定命中比盲目求快更重要。':'不错的稳定性。保持同样的准度，试着一点点缩短目标之间的切换。';
   $('resultSettings').textContent=inputName(session.settings.input)+' · FOV '+session.settings.fov+'°'+(session.settings.input==='fps'?' · '+session.settings.dpi+' DPI · '+session.settings.cm+' cm/360°':' · 直接点击目标');
   if(!storageOK)$('resultAdvice').textContent+=' 当前浏览器无法保存记录，请在关闭前导出。';
@@ -496,7 +509,7 @@ $('retryLockButton').addEventListener('click',()=>{audioReady();requestLock();})
 function openHistory(){renderHistory();$('historyDialog').showModal();}
 function renderHistory(){
   const list=$('historyList');list.replaceChildren();$('historyEmpty').hidden=history.length>0;$('historyActions').hidden=history.length===0&&Object.keys(bests).length===0;
-  for(const r of history){const row=document.createElement('div');row.className='history-row';const info=document.createElement('div'),title=document.createElement('div'),meta=document.createElement('div'),score=document.createElement('div');title.className='row-title';title.textContent=MODES[r.mode].name+' · '+inputName(r.input);meta.className='row-meta';meta.textContent=new Intl.DateTimeFormat('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(r.date))+' · '+r.hits+'/'+r.shots+' 命中 · '+accuracy(r.shots,r.hits);score.className='row-score';score.textContent=number(r.score);info.append(title,meta);row.append(info,score);list.append(row);}
+  for(const r of history){const row=document.createElement('div');row.className='history-row';const info=document.createElement('div'),title=document.createElement('div'),meta=document.createElement('div'),score=document.createElement('div');title.className='row-title';title.textContent=MODES[r.mode].name+' · '+inputName(r.input)+' · '+motionName(r.movingTargets);meta.className='row-meta';meta.textContent=new Intl.DateTimeFormat('zh-CN',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).format(new Date(r.date))+' · '+r.hits+'/'+r.shots+' 命中 · '+accuracy(r.shots,r.hits);score.className='row-score';score.textContent=number(r.score);info.append(title,meta);row.append(info,score);list.append(row);}
 }
 $('helpButton').addEventListener('click',()=>$('helpDialog').showModal());$('historyButton').addEventListener('click',openHistory);
 for(const b of document.querySelectorAll('.close-dialog'))b.addEventListener('click',()=>b.closest('dialog').close());
@@ -566,6 +579,52 @@ $('resetCrosshair').addEventListener('click',()=>{applyCrosshairPreset(CH_PRESET
 for(const id of ['crosshairButton','openCrosshairSettings','pauseCrosshairButton'])$(id).addEventListener('click',()=>openCrosshairPage());
 $('crosshairBack').addEventListener('click',()=>closeCrosshairPage());$('crosshairDone').addEventListener('click',()=>closeCrosshairPage());
 window.addEventListener('hashchange',()=>{if(location.hash==='#crosshair')openCrosshairPage(false);else if(crosshairOpen)closeCrosshairPage(false);});
+
+// Optional horizontal motion. Y/Z remain fixed for the life of each target.
+function scoreKey(mode,input,moving=false){return mode+':'+input+(moving===true?':moving':'');}
+function motionName(moving){return moving===true?'水平变速':'静止';}
+function initTargetMotion(target,bornAt){
+  const m=MODES[session.mode],bound=(m.columns-1)*m.stepX/2;
+  let direction=Math.random()<.5?-1:1;if(target.x<=-bound+.001)direction=1;if(target.x>=bound-.001)direction=-1;
+  target.motion={direction,baseSpeed:(session.mode==='sixshot'?.7:.9)+Math.random()*(session.mode==='sixshot'?1.6:1.8),phase:Math.random()*Math.PI*2,vx:direction*(.5+Math.random()),changeAt:bornAt+450+Math.random()*1000,bornAt};
+  return target;
+}
+function advanceTargetMotion(activeMs){
+  if(!session?.settings.movingTargets||state!=='running')return;
+  const previous=session.motionMs||0;const remaining=Math.max(0,Math.min(250,activeMs-previous));session.motionMs=activeMs;if(!remaining)return;
+  const m=MODES[session.mode],bound=(m.columns-1)*m.stepX/2,minX=-bound,maxX=bound;
+  const rows=new Map();for(const t of targets){if(!rows.has(t.y))rows.set(t.y,[]);rows.get(t.y).push(t);}
+  let time=activeMs-remaining,left=remaining;
+  // Substeps prevent fast targets from tunnelling through each other at low FPS.
+  while(left>.00001){const ms=Math.min(left,1000/120),dt=ms/1000;time+=ms;left-=ms;
+    for(const t of targets){const v=t.motion;if(!v||time<v.bornAt)continue;
+      if(time>=v.changeAt){v.baseSpeed=(session.mode==='sixshot'?.7:.9)+Math.random()*(session.mode==='sixshot'?1.6:1.8);if(Math.random()<.38)v.direction*=-1;v.changeAt=time+450+Math.random()*1050;}
+      const desired=v.direction*v.baseSpeed*(.78+.22*Math.sin(time*.0031+v.phase));
+      const maxChange=5.5*dt;v.vx+=Math.max(-maxChange,Math.min(maxChange,desired-v.vx));t.x+=v.vx*dt;
+      if(t.x<minX){t.x=minX;v.direction=1;v.vx=Math.abs(v.vx);}else if(t.x>maxX){t.x=maxX;v.direction=-1;v.vx=-Math.abs(v.vx);}
+    }
+    // Same-row targets bounce away and are projected apart without changing height.
+    for(const row of rows.values()){if(row.length<2)continue;row.sort((a,b)=>a.x-b.x||a.cell-b.cell);
+      for(let i=0;i<row.length-1;i++){const a=row[i],b=row[i+1],gap=a.radius+b.radius+.025;if(b.x-a.x<gap){const overlap=(gap-(b.x-a.x))/2;a.x-=overlap;b.x+=overlap;a.motion.direction=-1;a.motion.vx=-Math.abs(a.motion.vx);b.motion.direction=1;b.motion.vx=Math.abs(b.motion.vx);}}
+      row[0].x=Math.max(minX,row[0].x);for(let i=1;i<row.length;i++){const gap=row[i-1].radius+row[i].radius+.025;row[i].x=Math.max(row[i].x,row[i-1].x+gap);}
+      if(row[row.length-1].x>maxX){row[row.length-1].x=maxX;for(let i=row.length-2;i>=0;i--){const gap=row[i].radius+row[i+1].radius+.025;row[i].x=Math.min(row[i].x,row[i+1].x-gap);}}
+      for(const t of row){if(t.x<=minX+.00001){t.motion.direction=1;t.motion.vx=Math.abs(t.motion.vx);}if(t.x>=maxX-.00001){t.motion.direction=-1;t.motion.vx=-Math.abs(t.motion.vx);}}
+    }
+  }
+  renderDirty=true;
+}
+function updateMotionLabels(){
+  const m=MODES[settings.mode],moving=settings.movingTargets;
+  $('previewTitle').textContent=moving?'保持高度，跟住变化。':m.title;
+  $('previewDescription').textContent=moving?m.count+' 个目标各自沿固定高度，左右变速往返。':m.description;
+  $('modeFocus').textContent=moving?'水平变速':m.focus;
+  $('modeTip').textContent=moving?'速度和方向会变化，但每颗球的高度保持不变。命中后会在随机网格位补充新球。':m.tip;
+  $('motionHint').textContent=moving?'已开启 · 两种训练都生效，成绩与静止模式分开。':'开启后，每颗球保持自身高度，左右变速移动。';
+  ensureMotionPreview();
+}
+function ensureMotionPreview(){if(!motionPreviewRaf&&settings.movingTargets&&state==='menu'&&!crosshairOpen&&!document.hidden&&!matchMedia('(prefers-reduced-motion: reduce)').matches)motionPreviewRaf=requestAnimationFrame(animateMotionPreview);}
+function animateMotionPreview(){motionPreviewRaf=0;if(!settings.movingTargets||state!=='menu'||crosshairOpen||document.hidden||matchMedia('(prefers-reduced-motion: reduce)').matches)return;drawPreview();motionPreviewRaf=requestAnimationFrame(animateMotionPreview);}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)ensureMotionPreview();});
 
 populateSettings();selectMode(settings.mode);if(location.hash==='#crosshair')openCrosshairPage(false);
 })();
